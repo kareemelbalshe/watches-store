@@ -1,0 +1,44 @@
+/* @import "tailwindcss"; */
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@layer base {
+  input {
+    @apply outline-none;
+  }
+  .light {
+    @apply bg-amber-100 text-black;
+  }
+  .dark {
+    @apply bg-amber-900 text-white;
+  }
+  p,
+  h1,
+  h2 {
+    font-family: cairo, Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+      "Helvetica Neue", sans-serif;
+  }
+  .ulHeader li {
+    @apply hover:text-amber-400 transition-all duration-300 ease-in-out hover:scale-105 hover:underline;
+  }
+  .ulDashboard a {
+    @apply flex items-center justify-center gap-5 transition-all duration-300 ease-in-out hover:translate-x-2;
+  }
+}

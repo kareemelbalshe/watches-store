@@ -1,0 +1,38 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "build": "npm i"
+  },
+  "author": "Kareem Elbalshy",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.8.2",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "cloudinary": "^1.41.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-async-handler": "^1.2.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^7.2.0",
+    "hpp": "^0.2.3",
+    "joi": "^17.13.3",
+    "joi-password-complexity": "^5.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.8.6",
+    "multer": "^1.4.5-lts.1",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.10.0",
+    "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "keywords": [],
+  "description": "backend to the watches e-commerce project"
+}
