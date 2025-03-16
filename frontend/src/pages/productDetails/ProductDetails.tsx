@@ -11,8 +11,8 @@ export default function ProductDetails() {
       </h1>
 
       <div className="flex flex-wrap justify-center gap-4">
-        {product?.image?.map(
-          (img: { url: string; publicId: string }, index: number) => (
+        {product?.image?.length ? (
+          product.image.map((img, index) => (
             <div
               key={index}
               className="w-80 h-80 overflow-hidden rounded-lg border bg-no-repeat border-amber-400 shadow-md relative"
@@ -28,7 +28,9 @@ export default function ProductDetails() {
                 transition: "background-size 0.3s ease",
               }}
             />
-          )
+          ))
+        ) : (
+          <p className="text-center">No images available</p>
         )}
       </div>
 

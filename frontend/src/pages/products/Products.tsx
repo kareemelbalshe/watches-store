@@ -27,7 +27,7 @@ export default function Products() {
             <div className="w-80 flex justify-center items-center relative overflow-hidden ">
               <img
                 className="w-80 bg-cover bg-center h-80 bg-no-repeat"
-                src={item?.image[0]?.url}
+                src={item?.image && item?.image[0]?.url}
                 alt="image of product"
                 loading="lazy"
               />

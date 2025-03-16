@@ -6,7 +6,12 @@ interface CartState {
   cart: Cart;
   loading: boolean;
   error: string | null;
-  cartTable: { carts?: Cart[]; totalCarts?: number; totalPages?: number; currentPage?: number };
+  cartTable: {
+    carts?: Cart[];
+    totalCarts?: number;
+    totalPages?: number;
+    currentPage?: number;
+  };
 }
 
 const initialState: CartState = {
@@ -18,12 +23,19 @@ const initialState: CartState = {
 
 export const handleGetAllCarts = createAsyncThunk(
   "cart/getAllCarts",
-  async ({ page = 1, limit = 10 }: { page: number; limit?: number }, { rejectWithValue }) => {
+  async (
+    { page = 1, limit = 10 }: { page: number; limit?: number },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await axiosInstance.get(`/carts?page=${page}&limit=${limit}`);
+      const response = await axiosInstance.get(
+        `/carts?page=${page}&limit=${limit}`
+      );
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Get all carts failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Get all carts failed"
+      );
     }
   }
 );
@@ -35,19 +47,23 @@ export const handleGetCartById = createAsyncThunk(
       const response = await axiosInstance.get(`/carts/${cartId}`);
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Get cart by ID failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Get cart by ID failed"
+      );
     }
   }
 );
 
 export const handleAddToCart = createAsyncThunk(
   "cart/addToCart",
-  async (cartData: Cart, { rejectWithValue }) => {
+  async (cartData: any, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/carts", cartData);
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Add to cart failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Add to cart failed"
+      );
     }
   }
 );
@@ -59,7 +75,9 @@ export const handleRemoveCart = createAsyncThunk(
       await axiosInstance.delete(`/carts/${cartId}`);
       return cartId;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Remove from cart failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Remove from cart failed"
+      );
     }
   }
 );
@@ -119,7 +137,7 @@ const cartSlice = createSlice({
       .addCase(handleRemoveCart.fulfilled, (state, action) => {
         if (state.cartTable.carts) {
           state.cartTable.carts = state.cartTable.carts.filter(
-            (cart) => cart._id !== action.payload
+            (cart: Cart) => cart._id !== action.payload
           );
         }
         state.loading = false;

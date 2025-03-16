@@ -76,7 +76,7 @@ export default function Cart() {
               {products
                 .reduce(
                   (acc: number, curr: ProductCart) =>
-                    acc + curr.product.price * curr.quantity.quantity,
+                    acc + curr.product.price * curr.quantity?.quantity,
                   0
                 )
                 .toFixed(2)}

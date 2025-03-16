@@ -3,10 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { truncate } from "../../lib/functions/truncate";
 import { Product } from "../../lib/types/types";
 import { cartAction } from "../../lib/redux/slices/cart-slice";
-import { FaRegEye } from "react-icons/fa";
+import { FaRegEye, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { AppDispatch } from "../../lib/redux/store";
 import { memo, useRef } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { BsCartPlus } from "react-icons/bs";
 
@@ -14,7 +13,9 @@ interface ProductSliderProps {
   arr?: Product[];
 }
 
-const ProductSlider = memo(function ProductSlider({ arr }: ProductSliderProps) {
+const ProductSlider = memo(function ProductSlider({
+  arr = [],
+}: ProductSliderProps) {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -34,6 +35,7 @@ const ProductSlider = memo(function ProductSlider({ arr }: ProductSliderProps) {
       <button
         onClick={() => scrollSlider("left")}
         className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg z-10 hidden md:flex"
+        aria-label="Scroll Left"
       >
         <FaChevronLeft size={20} />
       </button>
@@ -42,22 +44,23 @@ const ProductSlider = memo(function ProductSlider({ arr }: ProductSliderProps) {
         ref={sliderRef}
         className="flex gap-7 w-full text-black items-start overflow-x-scroll hide-scrollbar scroll-smooth"
       >
-        {arr?.map((item, index) => (
+        {arr.map((item) => (
           <div
             className="flex items-center flex-col bg-amber-400 rounded-lg pb-2 min-w-72 group"
-            key={index}
+            key={item._id}
           >
             <div className="flex justify-center items-center relative overflow-hidden">
               <img
-                className="w-72 bg-cover bg-center bg-no-repeat h-80"
-                src={item?.image[0]?.url}
-                alt=""
+                className="w-72 h-80 bg-cover bg-center bg-no-repeat"
+                src={item?.image && item?.image[0]?.url}
+                alt={item.title || "Product Image"}
                 loading="lazy"
               />
 
               <FaRegEye
                 onClick={() => navigate(`/product/${item._id}`)}
                 className="absolute right-4 top-4 text-amber-400 text-2xl cursor-pointer"
+                aria-label="View Product"
               />
 
               <button
@@ -70,8 +73,10 @@ const ProductSlider = memo(function ProductSlider({ arr }: ProductSliderProps) {
                 <BsCartPlus /> <p>Add to Cart</p>
               </button>
             </div>
+
             <h1 className="text-2xl">{truncate(item.title, 20)}</h1>
             <p className="text-sm">Price: {item.price} EGP</p>
+
             {item.discount > 0 && (
               <>
                 <span className="text-sm">Discount: {item.discount}%</span>
@@ -82,7 +87,7 @@ const ProductSlider = memo(function ProductSlider({ arr }: ProductSliderProps) {
             )}
 
             <span className="text-sm">Quantity: {item.stock}</span>
-            <span className="text-sm">Category: ({item?.category})</span>
+            <span className="text-sm">Category: ({item.category})</span>
           </div>
         ))}
       </div>
@@ -90,10 +95,12 @@ const ProductSlider = memo(function ProductSlider({ arr }: ProductSliderProps) {
       <button
         onClick={() => scrollSlider("right")}
         className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg z-10 hidden md:flex"
+        aria-label="Scroll Right"
       >
         <FaChevronRight size={20} />
       </button>
     </div>
   );
 });
+
 export default ProductSlider;

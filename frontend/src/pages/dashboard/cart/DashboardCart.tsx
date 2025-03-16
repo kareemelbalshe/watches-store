@@ -12,7 +12,7 @@ export default function DashboardCart() {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    setPage(cartTable?.currentPage);
+    setPage(cartTable?.currentPage as number);
   }, [cartTable]);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function DashboardCart() {
       <Pagination
         page={page}
         onPageChange={setPage}
-        lastPage={cartTable?.totalPages}
+        lastPage={cartTable?.totalPages as number}
       />
     </div>
   );

@@ -15,7 +15,7 @@ const initialState: ProductState = {
   productsTable: {},
   productsLess: {},
   productsSales: {},
-  product: {},
+  product: {} as Product,
   loading: false,
   error: null,
 };
@@ -215,7 +215,7 @@ const productSlice = createSlice({
       .addCase(handleUpdateProduct.fulfilled, (state, action) => {
         if (state.productsTable.products) {
           state.productsTable.products = state.productsTable.products.map(
-            (product) =>
+            (product: Product) =>
               product._id === action.payload._id ? action.payload : product
           );
         }
@@ -223,19 +223,19 @@ const productSlice = createSlice({
       .addCase(handleDeleteProduct.fulfilled, (state, action) => {
         if (state.productsTable.products) {
           state.productsTable.products = state.productsTable.products.filter(
-            (product) => product._id !== action.payload
+            (product: Product) => product._id !== action.payload
           );
         }
       })
       .addCase(handleAddProductImage.fulfilled, (state, action) => {
         const index = state.productsTable.products.findIndex(
-          (product) => product._id === action.payload._id
+          (product: Product) => product._id === action.payload._id
         );
         if (index !== -1) state.productsTable.products[index] = action.payload;
       })
       .addCase(handleDeleteProductImage.fulfilled, (state, action) => {
         const index = state.productsTable.products.findIndex(
-          (product) => product._id === action.payload._id
+          (product: Product) => product._id === action.payload._id
         );
         if (index !== -1) state.productsTable.products[index] = action.payload;
       });

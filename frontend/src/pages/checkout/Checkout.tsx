@@ -5,7 +5,7 @@ import Button from "../../components/button/Button";
 import { handleAddToCart } from "../dashboard/cart/redux/cartSlice";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Cart } from "../../lib/types/types";
+import { ProductCart } from "../../lib/types/types";
 import { cartAction } from "../../lib/redux/slices/cart-slice";
 import { toast } from "react-toastify";
 
@@ -27,14 +27,27 @@ export default function Checkout() {
     if (products.length) {
       setTotalPrice(
         products.reduce(
-          (acc, curr) =>
+          (acc = 0, curr: ProductCart) =>
             acc + (curr.product?.price || 0) * (curr.quantity?.quantity || 0),
           0
         )
       );
-      console.log("Total Price Calculated:", totalPrice);
     }
   }, [products]);
+
+  const formData = {
+    firstName,
+    lastName,
+    email,
+    phone,
+    address,
+    city,
+    products: products.map((product: ProductCart) => ({
+      product: product.product._id,
+      quantity: product.quantity.quantity,
+    })),
+    totalPrice: totalPrice,
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,19 +69,7 @@ export default function Checkout() {
     }, 5000);
   };
 
-  const formData: Cart = {
-    firstName,
-    lastName,
-    email,
-    phone,
-    address,
-    city,
-    products: products.map((product) => ({
-      product: product.product._id,
-      quantity: product.quantity.quantity,
-    })),
-    totalPrice: totalPrice,
-  };
+  
   console.log("Products in cart:", products);
   console.log("Total Price Calculated:", totalPrice);
 

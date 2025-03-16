@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../button/Button.tsx";
 
-
 interface TableProps {
   thead: string[];
   headerData?: string[];
@@ -15,7 +14,7 @@ interface TableProps {
   edit?: boolean;
   linkEdit?: string;
   del?: boolean;
-  handleDelete?: () => void;
+  handleDelete?: (id: string) => void;
 }
 
 export default function AnyTable({
@@ -55,7 +54,7 @@ export default function AnyTable({
           text={"Delete"}
           className=""
           //  icon={}
-          onClick={() => handleDelete(row?._id)}
+          onClick={() => handleDelete && handleDelete(row?._id)}
         />
       )}
     </td>
@@ -65,19 +64,19 @@ export default function AnyTable({
 
   return (
     <>
-      <div
-        className={`overflow-x-scroll hide-scrollbar`}
-      >
+      <div className={`overflow-x-scroll hide-scrollbar`}>
         {(titleHeader || add) && (
           <div className="flex justify-between items-center">
             <div className="pt-3 pl-4 mb-3">
               <h1 className="font-bold text-[25px]">{titleHeader}</h1>
             </div>
-            {
-              add && (
-                <Button text={`Add ${titleHeader}`} width="w-32" onClick={() => linkAdd && navigate(linkAdd)} />
-              )
-            }
+            {add && (
+              <Button
+                text={`Add ${titleHeader}`}
+                width="w-32"
+                onClick={() => linkAdd && navigate(linkAdd)}
+              />
+            )}
           </div>
         )}
         <hr className="border-amber-400 mb-5" />
@@ -119,7 +118,6 @@ export default function AnyTable({
                       )}
                     </td>
                   ))}
-
                   {renderActions(row)}
                 </tr>
               ))}

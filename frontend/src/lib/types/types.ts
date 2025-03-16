@@ -3,10 +3,10 @@ export type Product = {
   title: string;
   description: string;
   price: number;
-  image?: {
+  image?: Array<{
     url: string;
     publicId: string | null;
-  };
+  }>;
   views: number;
   stock: number;
   category: string;
@@ -30,8 +30,9 @@ export type Category = {
 };
 
 export type ProductCart = {
+  _id: string;
   product: Product;
-  quantity: number;
+  quantity: { quantity: number };
 };
 
 export type Cart = {
@@ -44,6 +45,7 @@ export type Cart = {
   city: string;
   products: ProductCart[];
   totalPrice: number;
+  createdAt: string;
 };
 
 export type Review = {

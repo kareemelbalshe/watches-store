@@ -69,7 +69,7 @@ export function useLogin() {
         validationError.inner.forEach((err: any) => {
           validationErrors[err.path] = err.message;
         });
-        setErrors(validationErrors);
+        setErrors(validationErrors as any);
       }
     };
 
