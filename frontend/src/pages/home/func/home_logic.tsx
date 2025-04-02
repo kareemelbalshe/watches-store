@@ -1,30 +1,54 @@
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../lib/redux/store";
 import { useTheme } from "../../../hooks/ThemeContext";
-import { useEffect } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 import { handleGetAllCategories } from "../../dashboard/category/redux/categorySlice";
 import { handleGetAllReviews } from "../../dashboard/review/redux/reviewSlice";
-import { handleGetLessStockProducts, handleGetMostSalesProducts } from "../../dashboard/product/redux/productSlice";
+import {
+  handleGetLessStockProducts,
+  handleGetMostSalesProducts,
+} from "../../dashboard/product/redux/productSlice";
+import { toast } from "react-toastify";
 
 export function useHome() {
-    const { categories } = useSelector((state: RootState) => state.category);
-  const { reviews } = useSelector((state: RootState) => state.review);
-  const { productsLess, productsSales } = useSelector(
-    (state: RootState) => state.product
-  );
-
+  const dispatch = useDispatch<AppDispatch>();
   const { isDarkMode } = useTheme();
 
-  const dispatch = useDispatch<AppDispatch>();
+  const { categories, error: categoriesError } = useSelector(
+    (state: RootState) => state.category
+  );
+  const { reviews, error: reviewsError } = useSelector(
+    (state: RootState) => state.review
+  );
+  const {
+    productsLess,
+    productsSales,
+    error: productsError,
+  } = useSelector((state: RootState) => state.product);
+  
 
-  useEffect(() => {
+  const fetchData = useCallback(() => {
     dispatch(handleGetAllCategories());
     dispatch(handleGetAllReviews());
     dispatch(handleGetLessStockProducts({ page: 1 }));
     dispatch(handleGetMostSalesProducts({ page: 1 }));
   }, [dispatch]);
 
-  const images: string[] = reviews.map((review) => review.image.url);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    if (categoriesError) toast.error(categoriesError);
+    if (reviewsError) toast.error(reviewsError);
+    if (productsError) toast.error(productsError);
+  }, [categoriesError, reviewsError, productsError]);
+
+  const images = useMemo(
+    () => reviews.map((review) => review.image?.url).filter(Boolean),
+    [reviews]
+  );
+
   return {
     categories,
     productsLess,

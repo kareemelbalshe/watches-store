@@ -6,8 +6,8 @@ interface InputProps {
   label?: string;
   placeholder: string;
   icon?: React.ReactNode;
-  value?: string;
-  setValue?: (e: string) => void;
+  value?: string | number | null;
+  setValue?: (e: any) => void;
   required?: boolean;
   disabled?: boolean;
   type?: "text" | "email" | "password";
@@ -94,7 +94,7 @@ const Input = memo(function Input({
           placeholder={
             valueInvalid ? `This field is required but ${label}` : placeholder
           }
-          value={value}
+          value={value || ""}
           onChange={handleInputChange}
           required={required}
           disabled={disabled}

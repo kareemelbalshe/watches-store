@@ -30,7 +30,7 @@ export const getAllCarts = asyncHandler(async (req, res) => {
       currentPage: pageNum,
     });
   } catch (error) {
-    console.error("Error:", error); // ✅
+    console.error("Error:", error); 
     res
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });
@@ -62,9 +62,14 @@ export const createCart = asyncHandler(async (req, res) => {
     await recordSale(req.body.products);
     res.status(201).json(cart);
   } catch (error) {
+    if (error.name === "ValidationError") {
+      const validationErrors = Object.values(error.errors).map((err) => err.message);
+      return res.status(400).json({ message: `Validation Error ${validationErrors}` });
+    }
     res.status(500).json({ message: "Failed to create cart" });
   }
 });
+
 
 export const deleteCart = asyncHandler(async (req, res) => {
   try {

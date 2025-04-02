@@ -51,8 +51,11 @@ export const getMostSalesProducts = asyncHandler(async (req, res) => {
       : undefined;
     const skip = limit ? (page - 1) * limit : 0;
 
-    const totalProducts = await Product.countDocuments({ sales: { $gt: 0 } });
-    const query = Product.find({ sales: { $gt: 0 } })
+    const totalProducts = await Product.countDocuments({
+      sales: { $gt: 0 },
+      stock: { $gt: 0 },
+    });
+    const query = Product.find({ sales: { $gt: 0 }, stock: { $gt: 0 } })
       .sort({ sales: -1 })
       .skip(skip);
 
@@ -82,7 +85,7 @@ export const getLessStockProducts = asyncHandler(async (req, res) => {
     const skip = limit ? (page - 1) * limit : 0;
 
     const totalProducts = await Product.countDocuments({ stock: { $gte: 0 } });
-    const query = Product.find({ stock: { $gte: 0 } })
+    const query = Product.find({ stock: { $gt: 0 } })
       .sort({ stock: 1 })
       .skip(skip);
 
@@ -128,7 +131,6 @@ export const createProduct = asyncHandler(async (req, res) => {
     const priceAfterDiscount =
       req.body.price - (req.body.price * req.body.discount) / 100;
 
-      console.log(priceAfterDiscount)
     const product = await Product.create({
       image: { url: result.secure_url, publicId: result.public_id },
       title: req.body.title,
@@ -171,10 +173,12 @@ export const updateProduct = async (req, res) => {
       category: req.body.category ?? product.category,
       discount: req.body.discount ?? product.discount,
     };
-    console.log(updatedData)
 
     updatedData.priceAfterDiscount = parseFloat(
-      (updatedData.price - (updatedData.price * updatedData.discount) / 100).toFixed(2)
+      (
+        updatedData.price -
+        (updatedData.price * updatedData.discount) / 100
+      ).toFixed(2)
     );
 
     const updatedProduct = await Product.findByIdAndUpdate(
@@ -189,7 +193,6 @@ export const updateProduct = async (req, res) => {
     res.status(500).json({ message: "Failed to update product" });
   }
 };
-
 
 export const addProductImage = asyncHandler(async (req, res) => {
   try {

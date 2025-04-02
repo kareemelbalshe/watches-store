@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../../../lib/redux/store";
 import { loginValidation } from "../../../lib/validation/validation";
 import { handleLogin } from "../redux/authSlice";
+import { toast } from "react-toastify";
 
 export function useLogin() {
   const [email, setEmail] = useState("");
@@ -13,13 +14,21 @@ export function useLogin() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, error } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
   const ref = useRef<HTMLFormElement>(null);
 
@@ -40,14 +49,11 @@ export function useLogin() {
     [email, password, dispatch, navigate]
   );
 
-  const handleClickOutside = useCallback(
-    (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        setErrors({ email: "", password: "" });
-      }
-    },
-    []
-  );
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (ref.current && !ref.current.contains(event.target as Node)) {
+      setErrors({ email: "", password: "" });
+    }
+  }, []);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);

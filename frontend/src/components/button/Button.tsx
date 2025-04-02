@@ -17,16 +17,16 @@ const Button = memo(function Button({
   disabled = false,
   className = "",
   type = "button",
-  width = "w-full",
+  width = "w-fit",
 }: ButtonProps) {
   return (
     <button
       type={type}
-      className={`${className} ${width} h-11 rounded-lg bg-amber-400 text-sm font-medium disabled:bg-gray-100 disabled:cursor-not-allowed`}
+      className={`${className} ${width} flex items-center justify-center gap-1 px-6 py-4 rounded-lg bg-amber-400 text-md font-medium disabled:cursor-not-allowed`}
       onClick={onClick}
       disabled={disabled}
     >
-      {icon} {text}
+      <span className="text-xl">{icon}</span>{text}
     </button>
   );
 });

@@ -1,32 +1,12 @@
-import { useDispatch, useSelector } from "react-redux";
 import AnyTable from "../../../components/table/anyTable";
-import { AppDispatch, RootState } from "../../../lib/redux/store";
-import { useEffect, useState } from "react";
-import { handleGetAllCarts, handleRemoveCart } from "./redux/cartSlice";
 import Pagination from "../../../components/table/pagination/Pagination";
-import { toast } from "react-toastify";
+import { useCart } from "./func/cart_logic";
 
 export default function DashboardCart() {
-  const { cartTable } = useSelector((state: RootState) => state.cart);
-  const [page, setPage] = useState(0);
-  const dispatch = useDispatch<AppDispatch>();
-
-  useEffect(() => {
-    setPage(cartTable?.currentPage as number);
-  }, [cartTable]);
-
-  useEffect(() => {
-    dispatch(handleGetAllCarts({ page: page, limit: 10 }));
-  }, [dispatch, page]);
-
-  const handleDeleteOneClick = (cartId: string) => {
-    dispatch(handleRemoveCart(cartId));
-    dispatch(handleGetAllCarts({ page: page, limit: 10 }));
-    toast.success("Cart has been deleted successfully");
-  };
+  const { cartTable, page, setPage, handleDeleteOneClick } = useCart();
 
   return (
-    <div className="pl-[200px] lg:p-10 mb-40 flex flex-col gap-5 items-center w-full">
+    <div className="mb-20 flex flex-col gap-5 items-stretch lg:items-center w-full p-6">
       <AnyTable
         del
         tbodys={cartTable?.carts}

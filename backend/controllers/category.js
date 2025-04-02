@@ -15,7 +15,6 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 export const getAllCategories = asyncHandler(async (req, res) => {
   try {
     const categories = await Category.find();
@@ -25,16 +24,14 @@ export const getAllCategories = asyncHandler(async (req, res) => {
   }
 });
 
-
 export const getCategoryById = asyncHandler(async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id);
+    const category = await Category.findById(req.params.categoryId);
     res.status(200).json(category);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
 
 export const createCategory = asyncHandler(async (req, res) => {
   if (!req.file) {
@@ -70,24 +67,22 @@ export const createCategory = asyncHandler(async (req, res) => {
   }
 });
 
-
 export const updateCategory = asyncHandler(async (req, res) => {
   try {
-    const error = validateCreateCategory(req.body);
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message });
-    }
-    const category = await Category.findByIdAndUpdate(req.params.categoryId, {
-      $set: {
-        title: req.body.title,
+    const category = await Category.findByIdAndUpdate(
+      req.params.categoryId,
+      {
+        $set: {
+          title: req.body.title,
+        },
       },
-    });
+      { new: true }
+    );
     res.status(200).json(category);
   } catch (error) {
     res.status(500).json({ message: "Failed to update category" });
   }
 });
-
 
 export const updateCategoryImage = asyncHandler(async (req, res) => {
   try {
@@ -123,7 +118,6 @@ export const updateCategoryImage = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Failed to update category image" });
   }
 });
-
 
 export const deleteCategory = asyncHandler(async (req, res) => {
   try {

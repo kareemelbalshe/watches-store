@@ -1,8 +1,16 @@
+import { cartAction } from "../../lib/redux/slices/cart-slice";
 import { useProductDetails } from "./func/product_details_logic";
 
 export default function ProductDetails() {
-  const { product, hoveredIndex, position, handleMouseMove, handleMouseLeave } =
-    useProductDetails();
+  const {
+    product,
+    hoveredIndex,
+    position,
+    handleMouseMove,
+    handleMouseLeave,
+    dispatch,
+    toast,
+  } = useProductDetails();
 
   return (
     <div className="w-full shadow-lg p-6 pb-28 space-y-10">
@@ -57,6 +65,15 @@ export default function ProductDetails() {
         </p>
         <p className="bg-green-500 text-white font-semibold rounded-lg p-2 shadow-md">
           Final Price: {product?.priceAfterDiscount} EGP
+        </p>
+        <p
+          onClick={() => {
+            dispatch(cartAction.addToCart(product));
+            toast.success("Product has been added to the cart!");
+          }}
+          className="bg-black text-white font-semibold rounded-lg p-2 shadow-md cursor-pointer"
+        >
+          Add to cart
         </p>
       </div>
     </div>

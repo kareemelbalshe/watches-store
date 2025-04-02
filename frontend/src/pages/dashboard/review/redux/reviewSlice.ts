@@ -14,7 +14,6 @@ const initialState: ReviewState = {
   error: null,
 };
 
-
 export const handleGetAllReviews = createAsyncThunk(
   "review/getAllReviews",
   async (_, { rejectWithValue }) => {
@@ -22,7 +21,9 @@ export const handleGetAllReviews = createAsyncThunk(
       const response = await axiosInstance.get("/reviews");
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Get all reviews failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Get all reviews failed"
+      );
     }
   }
 );
@@ -39,7 +40,9 @@ export const handleCreateReview = createAsyncThunk(
       });
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Create review failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Create review failed"
+      );
     }
   }
 );
@@ -51,7 +54,9 @@ export const handleDeleteReview = createAsyncThunk(
       await axiosInstance.delete(`/reviews/${reviewId}`);
       return reviewId;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Delete review failed");
+      return rejectWithValue(
+        error.response?.data?.message || "Delete review failed"
+      );
     }
   }
 );
@@ -59,19 +64,48 @@ export const handleDeleteReview = createAsyncThunk(
 const reviewSlice = createSlice({
   name: "review",
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(handleGetAllReviews.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(handleGetAllReviews.fulfilled, (state, action) => {
         state.reviews = action.payload;
         state.loading = false;
       })
+      .addCase(handleGetAllReviews.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(handleCreateReview.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(handleCreateReview.fulfilled, (state, action) => {
         state.reviews.push(action.payload);
+        state.loading = false;
+      })
+      .addCase(handleCreateReview.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(handleDeleteReview.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(handleDeleteReview.fulfilled, (state, action) => {
-        state.reviews = state.reviews.filter((review) => review._id !== action.payload);
+        state.reviews = state.reviews.filter(
+          (review) => review._id !== action.payload
+        );
+        state.loading = false;
+      })
+      .addCase(handleDeleteReview.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });

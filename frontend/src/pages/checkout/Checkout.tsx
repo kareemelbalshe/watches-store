@@ -3,7 +3,7 @@ import { AppDispatch, RootState } from "../../lib/redux/store";
 import Input from "../../components/input/Input";
 import Button from "../../components/button/Button";
 import { handleAddToCart } from "../dashboard/cart/redux/cartSlice";
-import { useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ProductCart } from "../../lib/types/types";
 import { cartAction } from "../../lib/redux/slices/cart-slice";
@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 export default function Checkout() {
   const { products } = useSelector((state: RootState) => state.localCart);
   const dispatch = useDispatch<AppDispatch>();
-
   const navigate = useNavigate();
 
   const [firstName, setFirstName] = useState("");
@@ -21,57 +20,72 @@ export default function Checkout() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
-  const [totalPrice, setTotalPrice] = useState(0.0);
 
-  useEffect(() => {
-    if (products.length) {
-      setTotalPrice(
-        products.reduce(
-          (acc = 0, curr: ProductCart) =>
-            acc + (curr.product?.price || 0) * (curr.quantity?.quantity || 0),
-          0
-        )
-      );
-    }
-  }, [products]);
+  const totalPrice = useMemo(
+    () =>
+      products.reduce(
+        (acc: number, curr: ProductCart) =>
+          curr.product.priceAfterDiscount
+            ? acc +
+              (curr.product?.priceAfterDiscount || 0) *
+                (curr.quantity?.quantity || 0)
+            : acc + (curr.product?.price || 0) * (curr.quantity?.quantity || 0),
+        0
+      ),
+    [products]
+  );
 
-  const formData = {
-    firstName,
-    lastName,
-    email,
-    phone,
-    address,
-    city,
-    products: products.map((product: ProductCart) => ({
-      product: product.product._id,
-      quantity: product.quantity.quantity,
-    })),
-    totalPrice: totalPrice,
-  };
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (!products.length) {
+        toast.error("Please add some products to cart");
+        return;
+      }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!products.length) {
-      toast.error("Please add some products to cart");
-      return;
-    }
-    dispatch(handleAddToCart(formData));
-    dispatch(cartAction.clear());
-    toast.success("Cart has been added successfully, we will send you");
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPhone("");
-    setAddress("");
-    setCity("");
-    setTimeout(() => {
-      navigate("/");
-    }, 5000);
-  };
+      const formData = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        address,
+        city,
+        products: products.map((product: ProductCart) => ({
+          product: product.product._id,
+          quantity: product.quantity.quantity,
+        })),
+        totalPrice,
+      };
 
-  
-  console.log("Products in cart:", products);
-  console.log("Total Price Calculated:", totalPrice);
+      await dispatch(handleAddToCart(formData)).unwrap();
+
+      dispatch(cartAction.clear());
+      toast.success("Cart has been added successfully, we will send you");
+
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPhone("");
+      setAddress("");
+      setCity("");
+
+      setTimeout(() => {
+        navigate("/");
+      }, 5000);
+    },
+    [
+      dispatch,
+      navigate,
+      products,
+      firstName,
+      lastName,
+      email,
+      phone,
+      address,
+      city,
+      totalPrice,
+    ]
+  );
 
   return (
     <div className="flex items-start justify-between p-10">

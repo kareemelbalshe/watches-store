@@ -10,7 +10,6 @@ export default function LoginAdmin() {
         setEmail,
         password,
         setPassword,
-        errors,
         onSubmit,
         ref,
       } = useLogin();
@@ -30,7 +29,6 @@ export default function LoginAdmin() {
               setValue={setEmail}
               icon={<MdOutlineAlternateEmail />}
               required
-              error={errors.email}
               border="border-amber-400"
             />
             <Input
@@ -41,7 +39,6 @@ export default function LoginAdmin() {
               setValue={setPassword}
               icon={<RiLockPasswordFill />}
               required
-              error={errors.password}
               border="border-amber-400"
             />
             <Button text="Login" type="submit" />

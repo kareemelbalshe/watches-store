@@ -46,7 +46,7 @@ const ProductSlider = memo(function ProductSlider({
       >
         {arr.map((item) => (
           <div
-            className="flex items-center flex-col bg-amber-400 rounded-lg pb-2 min-w-72 group"
+            className="flex items-center flex-col bg-amber-400 rounded-lg pb-2 min-w-72 group min-h-[470px]"
             key={item._id}
           >
             <div className="flex justify-center items-center relative overflow-hidden">
@@ -59,7 +59,7 @@ const ProductSlider = memo(function ProductSlider({
 
               <FaRegEye
                 onClick={() => navigate(`/product/${item._id}`)}
-                className="absolute right-4 top-4 text-amber-400 text-2xl cursor-pointer"
+                className="absolute left-4 top-4 text-amber-400 text-2xl cursor-pointer"
                 aria-label="View Product"
               />
 
@@ -75,19 +75,34 @@ const ProductSlider = memo(function ProductSlider({
             </div>
 
             <h1 className="text-2xl">{truncate(item.title, 20)}</h1>
-            <p className="text-sm">Price: {item.price} EGP</p>
+            <p className={`${item.discount && "line-through"} text-sm`}>
+              Price:{" "}
+              <span className="font-bold text-red-500">{item.price} EGP</span>
+            </p>
 
             {item.discount > 0 && (
               <>
-                <span className="text-sm">Discount: {item.discount}%</span>
+                <span className="text-sm ">
+                  Discount:{" "}
+                  <span className="font-bold text-green-500">
+                    {item.discount}%
+                  </span>
+                </span>
                 <span className="text-sm">
-                  Price After Discount: {item.priceAfterDiscount} EGP
+                  Price After Discount:{" "}
+                  <span className="font-bold text-green-500">
+                    {item.priceAfterDiscount} EGP
+                  </span>
                 </span>
               </>
             )}
 
-            <span className="text-sm">Quantity: {item.stock}</span>
-            <span className="text-sm">Category: ({item.category})</span>
+            <span className="text-sm">
+              Quantity: <span className="font-bold">{item.stock}</span>
+            </span>
+            <span className="text-md">
+              Category: <span className="font-bold">({item.category})</span>
+            </span>
           </div>
         ))}
       </div>

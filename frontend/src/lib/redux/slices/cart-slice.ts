@@ -11,7 +11,6 @@ export const localCart = createSlice({
       const findProduct = state.products.find(
         (product: ProductCart) => product.product._id === action.payload._id
       );
-      console.log(action.payload);
       if (findProduct) {
         findProduct.quantity.quantity++;
       } else {

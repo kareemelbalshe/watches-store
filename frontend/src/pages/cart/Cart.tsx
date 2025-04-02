@@ -20,7 +20,7 @@ export default function Cart() {
             <th className={`flex-1`}>Product</th>
             <th className={`flex-1`}>Price</th>
             <th className={`flex-1`}>Quantity</th>
-            <th className={`flex-1`}>Subtotal</th>
+            <th className={`flex-1`}>Total</th>
             <th className={`flex-1`}>Delete</th>
           </tr>
         </thead>
@@ -53,7 +53,14 @@ export default function Cart() {
               </td>
               <td className="flex-1 text-blue-500">
                 EGP
-                {(product.product.price * product.quantity.quantity).toFixed(2)}
+                {product.product.priceAfterDiscount
+                  ? (
+                      product.product.priceAfterDiscount *
+                      product.quantity.quantity
+                    ).toFixed(2)
+                  : (product.product.price * product.quantity.quantity).toFixed(
+                      2
+                    )}
               </td>
               <td className="flex-1">
                 <Button
@@ -82,10 +89,10 @@ export default function Cart() {
                 .toFixed(2)}
             </p>
           </div>
-          <div className="flex items-center justify-between border-b-[1px] border-amber-400 py-2">
+          {/* <div className="flex items-center justify-between border-b-[1px] border-amber-400 py-2">
             <h2>shipping</h2>
             <p className="">free</p>
-          </div>
+          </div> */}
           <div className="flex items-center justify-between py-2">
             <h2>total</h2>
             <p className="">
@@ -93,7 +100,13 @@ export default function Cart() {
               {products
                 .reduce(
                   (acc: number, curr: ProductCart) =>
-                    acc + curr.product.price * curr.quantity.quantity,
+                    curr.product.priceAfterDiscount
+                      ? acc +
+                        (curr.product?.priceAfterDiscount || 0) *
+                          (curr.quantity?.quantity || 0)
+                      : acc +
+                        (curr.product?.price || 0) *
+                          (curr.quantity?.quantity || 0),
                   0
                 )
                 .toFixed(2)}

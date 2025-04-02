@@ -1,55 +1,14 @@
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
-import { AppDispatch, RootState } from "../../../../../lib/redux/store";
-import { useEffect, useMemo, useCallback } from "react";
-import { handleGetCartById } from "../../redux/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { useViewCart } from "./func/view_cart_logic";
+import Button from "../../../../../components/button/Button";
 
 export default function ViewCart() {
-  const { cartId } = useParams();
-  const dispatch = useDispatch<AppDispatch>();
-  
-  const cart = useSelector((state: RootState) => state.cart.cart);
-
-  useEffect(() => {
-    if (cartId) {
-      dispatch(handleGetCartById(cartId));
-    }
-  }, [dispatch, cartId]);
-
-  const products = useMemo(() => cart?.products || [], [cart]);
-
-  const renderProduct = useCallback((item: any, index: number) => {
-    if (!item?.product) return null;
-
-    return (
-      <li key={index} className="py-2 flex items-center justify-between flex-col md:flex-row">
-        <p>
-          <strong>Product Name:</strong> {item.product.title}{" "}
-          <Link to={`/product/${item.product._id}`} className="underline">
-            View Product
-          </Link>
-        </p>
-        <p>
-          <strong>Quantity:</strong> {item?.quantity?.quantity}
-        </p>
-        <p>
-          <strong>Price:</strong> {item.product.price} EGP
-        </p>
-        {item.product.image && item.product.image.length > 0 && (
-          <img
-            src={item.product.image[0].url}
-            alt="product"
-            className="w-20 h-20 bg-center bg-no-repeat bg-cover"
-            loading="lazy"
-          />
-        )}
-      </li>
-    );
-  }, []);
+  const { cart, products, renderProduct } = useViewCart();
+  const navigate= useNavigate()
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="p-6 rounded-lg shadow-lg w-full max-w-2xl bg-amber-950 mt-10 mb-32">
+    <div className="flex justify-center items-center flex-col gap-5 mb-32">
+      <div className="p-6 rounded-lg shadow-lg w-full max-w-2xl bg-amber-950 mt-10">
         <h2 className="text-2xl font-semibold mb-4">Cart Details</h2>
         <p>
           <strong>Name:</strong> {cart?.firstName} {cart?.lastName}
@@ -76,6 +35,7 @@ export default function ViewCart() {
           {products.map(renderProduct)}
         </ul>
       </div>
+      <Button text="Back" onClick={()=>navigate("/dashboard")} width="w-[200px]" />
     </div>
   );
 }

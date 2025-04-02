@@ -6,7 +6,7 @@ interface CategoryState {
   categories: Category[];
   category: Category | null;
   loading: boolean;
-  error: string | null;
+  error: any;
 }
 
 const initialState: CategoryState = {
@@ -69,10 +69,14 @@ export const handleCreateCategory = createAsyncThunk(
 
 export const handleUpdateCategory = createAsyncThunk(
   "category/updateCategory",
-  async (category: Category, { rejectWithValue }) => {
+  async (
+    { categoryId, title }: { categoryId: string; title: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const { _id, ...data } = category;
-      const response = await axiosInstance.put(`/categories/${_id}`, data);
+      const response = await axiosInstance.put(`/categories/${categoryId}`, {
+        title,
+      });
       return response.data;
     } catch (error: any) {
       return rejectWithValue(
@@ -113,7 +117,6 @@ export const handleDeleteCategory = createAsyncThunk(
   async (categoryId: string, { rejectWithValue }) => {
     try {
       await axiosInstance.delete(`/categories/${categoryId}`);
-      return categoryId;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Delete category failed"
@@ -128,21 +131,61 @@ const categorySlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(handleGetAllCategories.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(handleGetAllCategories.fulfilled, (state, action) => {
         state.categories = action.payload;
         state.loading = false;
+      })
+      .addCase(handleGetAllCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(handleGetCategoryById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(handleGetCategoryById.fulfilled, (state, action) => {
         state.category = action.payload;
         state.loading = false;
       })
+      .addCase(handleGetCategoryById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(handleCreateCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(handleCreateCategory.fulfilled, (state, action) => {
         state.categories.push(action.payload);
+        state.loading = false;
+      })
+      .addCase(handleCreateCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(handleUpdateCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(handleUpdateCategory.fulfilled, (state, action) => {
         state.categories = state.categories.map((category) =>
           category._id === action.payload._id ? action.payload : category
         );
+        state.loading = false;
+      })
+      .addCase(handleUpdateCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(handleUpdateCategoryImage.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(handleUpdateCategoryImage.fulfilled, (state, action) => {
         const updatedCategory = action.payload;
@@ -152,11 +195,26 @@ const categorySlice = createSlice({
         if (index !== -1) {
           state.categories[index] = updatedCategory;
         }
+        state.loading = false;
+      })
+      .addCase(handleUpdateCategoryImage.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(handleDeleteCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(handleDeleteCategory.fulfilled, (state, action) => {
         state.categories = state.categories.filter(
           (category) => category._id !== action.payload
         );
+        state.loading = false;
+      })
+      .addCase(handleDeleteCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });

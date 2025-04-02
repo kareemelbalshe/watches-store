@@ -1,5 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import Button from "../button/Button.tsx";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { PiEyeDuotone } from "react-icons/pi";
+import { LuPencilLine } from "react-icons/lu";
+import { IoMdAdd } from "react-icons/io";
+import { useMemo } from "react";
 
 interface TableProps {
   thead: string[];
@@ -31,40 +36,43 @@ export default function AnyTable({
   del = false,
   handleDelete,
 }: TableProps) {
-  const renderActions = (row: any) => (
-    <td className="p-2 w-[400px] flex items-center gap-2 justify-center">
-      {view && (
-        <Button
-          className="btn-sm px-2 py-2"
-          text={"View"}
-          //  icon={}
-          onClick={() => linkView && navigate(linkView + "/" + row?._id)}
-        />
-      )}
-      {edit && (
-        <Button
-          text={"Edit"}
-          className=""
-          //  icon={}
-          onClick={() => linkEdit && navigate(linkEdit + "/" + row?._id)}
-        />
-      )}
-      {del && (
-        <Button
-          text={"Delete"}
-          className=""
-          //  icon={}
-          onClick={() => handleDelete && handleDelete(row?._id)}
-        />
-      )}
-    </td>
-  );
-
   const navigate = useNavigate();
+
+  const renderActions = useMemo(() => {
+    return (row: any) => (
+      <td className="p-2 w-[400px] flex items-center gap-2 justify-around">
+        {view && (
+          <Button
+            className="btn-sm px-2 py-2"
+            text={"View"}
+            icon={<PiEyeDuotone />}
+            onClick={() => linkView && navigate(linkView + "/" + row?._id)}
+          />
+        )}
+        {edit && (
+          <Button
+            text={"Edit"}
+            className=""
+            icon={<LuPencilLine />}
+            onClick={() => linkEdit && navigate(linkEdit + "/" + row?._id)}
+          />
+        )}
+        {del && (
+          <Button
+            text={"Delete"}
+            className=""
+            icon={<FaRegTrashAlt />}
+            onClick={() => handleDelete && handleDelete(row?._id)}
+          />
+        )}
+      </td>
+    );
+  }, [view, edit, del, linkView, linkEdit, handleDelete, navigate]);
+  
 
   return (
     <>
-      <div className={`overflow-x-scroll hide-scrollbar`}>
+      <div className={`overflow-x-scroll hide-scrollbar w-fit`}>
         {(titleHeader || add) && (
           <div className="flex justify-between items-center">
             <div className="pt-3 pl-4 mb-3">
@@ -73,13 +81,14 @@ export default function AnyTable({
             {add && (
               <Button
                 text={`Add ${titleHeader}`}
-                width="w-32"
+                // width="w-40"
+                icon={<IoMdAdd />}
                 onClick={() => linkAdd && navigate(linkAdd)}
               />
             )}
           </div>
         )}
-        <hr className="border-amber-400 mb-5" />
+        <div className="border border-amber-400 mb-5 w-full"></div>
         <div className={`relative`}>
           <table className="w-full border-collapse border-2 border-amber-400">
             <thead>
@@ -102,7 +111,7 @@ export default function AnyTable({
                     >
                       {header === "image" || header === "avatar" ? (
                         <img
-                          src={row?.[header][0].url}
+                          src={row?.[header][0].url || row?.[header].url}
                           alt="profile"
                           className="w-10 h-10 mx-auto rounded-full bg-cover bg-center"
                           loading="lazy"
