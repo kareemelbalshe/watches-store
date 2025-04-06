@@ -65,8 +65,12 @@ const ProductSlider = memo(function ProductSlider({
 
               <button
                 onClick={() => {
-                  dispatch(cartAction.addToCart(item));
-                  toast.success("Product has been added to the cart!");
+                  if (item.stock > 0) {
+                    dispatch(cartAction.addToCart(item));
+                    toast.success("Product has been added to the cart!");
+                  } else {
+                    toast.error("Out of stock, text me at whatsapp");
+                  }
                 }}
                 className="absolute bottom-[-100%] w-full bg-black text-white p-2 transition-all duration-300 group-hover:bottom-0 flex items-center justify-center gap-2 text-xl"
               >

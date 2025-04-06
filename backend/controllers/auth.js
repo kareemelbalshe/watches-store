@@ -3,6 +3,7 @@ import Admin from "../models/Admin.js";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken"
 
+
 export const register = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const admin = await Admin.findOne({ email });

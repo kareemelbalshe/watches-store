@@ -11,6 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // const __dirname = path.resolve();
 import fs from "fs";
 
+
 export const getAllProducts = asyncHandler(async (req, res) => {
   try {
     const { category, page = 1, limit } = req.query;
@@ -42,6 +43,7 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 export const getMostSalesProducts = asyncHandler(async (req, res) => {
   try {
@@ -76,6 +78,7 @@ export const getMostSalesProducts = asyncHandler(async (req, res) => {
   }
 });
 
+
 export const getLessStockProducts = asyncHandler(async (req, res) => {
   try {
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -106,6 +109,7 @@ export const getLessStockProducts = asyncHandler(async (req, res) => {
   }
 });
 
+
 export const getProductById = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.productId);
@@ -118,10 +122,18 @@ export const getProductById = asyncHandler(async (req, res) => {
   }
 });
 
+
 export const createProduct = asyncHandler(async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No image provided" });
   }
+  const existingProduct = await Product.findOne({
+    title: req.body.title.trim(),
+  });
+  if (existingProduct) {
+    return res.status(400).json({ message: "Product already exists" });
+  }
+
   const imagePath = path.join(__dirname, `../images/${req.file.filename}`);
   const result = await cloudinaryUploadImage(imagePath);
   if (!result || !result.secure_url || !result.public_id) {
@@ -152,6 +164,7 @@ export const createProduct = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Failed to create product" });
   }
 });
+
 
 export const updateProduct = async (req, res) => {
   try {
@@ -194,6 +207,7 @@ export const updateProduct = async (req, res) => {
   }
 };
 
+
 export const addProductImage = asyncHandler(async (req, res) => {
   try {
     if (!req.file) {
@@ -232,6 +246,7 @@ export const addProductImage = asyncHandler(async (req, res) => {
   }
 });
 
+
 export const deleteProductImage = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.productId);
@@ -256,6 +271,7 @@ export const deleteProductImage = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Failed to delete product image" });
   }
 });
+
 
 export const deleteProduct = asyncHandler(async (req, res) => {
   try {

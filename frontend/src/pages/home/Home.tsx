@@ -5,14 +5,26 @@ import Underline from "./components/Underline";
 import ProductSlider from "../../components/slider/ProductSlider";
 import CategorySection from "./components/CategorySection";
 import { useHome } from "./func/home_logic";
+import Loader from "../../components/loader/loader";
 
 export default function Home() {
-  const { categories, productsLess, productsSales, isDarkMode, images } =
-    useHome();
+  const {
+    categories,
+    productsLess,
+    productsSales,
+    isDarkMode,
+    images,
+    isLoading,
+  } = useHome();
 
   return (
     <div className="flex items-center flex-col w-full ">
-      <div className="w-full h-[calc(100vh-150px)] bg-[url('https://media.rolex.com/image/upload/c_limit,w_1920/f_auto/q_auto/v1704380521/corners/homepage/corners-homepage-push-1945_oyster_perpetual_datejust_1802jva_m126333_0010_1802jva_002')] bg-no-repeat bg-center bg-fixed"></div>
+      {isLoading && <Loader />}
+      <div className="w-full flex items-center h-[calc(100vh-150px)] bg-[url('https://media.rolex.com/image/upload/c_limit,w_1920/f_auto/q_auto/v1704380521/corners/homepage/corners-homepage-push-1945_oyster_perpetual_datejust_1802jva_m126333_0010_1802jva_002')] bg-no-repeat bg-center bg-fixed">
+        <h1 className="text-5xl text-amber-400 lg:w-1/2 p-16 h-full flex items-center bg-black/30">
+          My Watches Store <br /> you can see our products here
+        </h1>
+      </div>
 
       <h1 className="text-3xl bg-amber-400 p-5 w-full text-center">
         يمكن الطلب من خلال واتس اب في اي وقت
@@ -26,13 +38,13 @@ export default function Home() {
         <CategorySection categories={categories} isDarkMode={isDarkMode} />
       </div>
 
-      <h1 className="text-4xl mt-6" id="reviews">
+      <h1 className="text-4xl mt-6">
         Less quantity
       </h1>
       <Underline />
 
       <ProductSlider arr={productsLess.products} />
-      <h1 className="text-4xl mt-6" id="reviews">
+      <h1 className="text-4xl mt-6">
         Most sales
       </h1>
       <Underline />
@@ -41,11 +53,11 @@ export default function Home() {
       ) : (
         <h1>No sales yet</h1>
       )}
-          <h1 className="text-4xl mt-6 mx-auto hidden md:block" id="reviews">
-            Reviews
-          </h1>
-          <Underline />
-          <RollingGallery autoplay={true} pauseOnHover={true} images={images} />
+      <h1 className="text-4xl mt-6 mx-auto hidden md:block" id="reviews">
+        Reviews
+      </h1>
+      <Underline />
+      <RollingGallery autoplay={true} pauseOnHover={true} images={images} />
 
       <Link
         className="fixed bottom-12 right-4 bg-green-500 rounded-full z-10"

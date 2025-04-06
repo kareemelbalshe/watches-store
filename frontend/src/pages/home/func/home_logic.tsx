@@ -14,25 +14,52 @@ export function useHome() {
   const dispatch = useDispatch<AppDispatch>();
   const { isDarkMode } = useTheme();
 
-  const { categories, error: categoriesError } = useSelector(
-    (state: RootState) => state.category
-  );
-  const { reviews, error: reviewsError } = useSelector(
-    (state: RootState) => state.review
-  );
+  const {
+    categories,
+    error: categoriesError,
+    loading: categoriesLoading,
+  } = useSelector((state: RootState) => state.category);
+  const {
+    reviews,
+    error: reviewsError,
+    loading: reviewsLoading,
+  } = useSelector((state: RootState) => state.review);
   const {
     productsLess,
     productsSales,
     error: productsError,
+    loading: productsLoading,
   } = useSelector((state: RootState) => state.product);
-  
 
-  const fetchData = useCallback(() => {
-    dispatch(handleGetAllCategories());
-    dispatch(handleGetAllReviews());
-    dispatch(handleGetLessStockProducts({ page: 1 }));
-    dispatch(handleGetMostSalesProducts({ page: 1 }));
-  }, [dispatch]);
+  const isLoading = categoriesLoading || reviewsLoading || productsLoading;
+
+  const fetchData = useCallback(
+    async (retryCount = 0) => {
+      if (retryCount > 5) {
+        toast.error("Failed to fetch data after multiple attempts");
+        return;
+      }
+
+      try {
+        const responses = await Promise.allSettled([
+          dispatch(handleGetAllCategories()),
+          dispatch(handleGetAllReviews()),
+          dispatch(handleGetLessStockProducts({ page: 1 })),
+          dispatch(handleGetMostSalesProducts({ page: 1 })),
+        ]);
+
+        const hasSuccess = responses.some((res) => res.status === "fulfilled");
+
+        if (!hasSuccess) {
+          setTimeout(() => fetchData(retryCount + 1), 5000);
+        }
+      } catch (error) {
+        toast.error("Error fetching data");
+        setTimeout(() => fetchData(retryCount + 1), 5000);
+      }
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     fetchData();
@@ -55,5 +82,6 @@ export function useHome() {
     productsSales,
     isDarkMode,
     images,
+    isLoading,
   };
 }

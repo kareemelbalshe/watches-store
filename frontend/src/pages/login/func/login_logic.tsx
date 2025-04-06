@@ -32,13 +32,11 @@ export function useLogin() {
 
   const ref = useRef<HTMLFormElement>(null);
 
-  console.log({ email, password });
 
   const onSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       try {
-        console.log(email, password);
         await dispatch(handleLogin({ email, password }));
         navigate("/dashboard");
       } catch (error: any) {

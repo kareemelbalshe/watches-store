@@ -22,48 +22,72 @@ export default function Products() {
       <Underline />
       {productsTable.products?.length > 0 && (
         <>
-          <div className="w-full flex flex-row flex-wrap items-center justify-around p-2 md:p-16 gap-10">
-            {productsTable.products?.map((item: Product, index: number) => (
+          <div className="w-full flex flex-row flex-wrap items-center justify-around p-2 md:p-16 gap-10 text-black">
+            {productsTable.products?.map((item: Product) => (
               <div
-                className="group flex items-center flex-col text-black bg-amber-400 rounded-lg pb-2"
-                key={index}
+                className="flex items-center flex-col bg-amber-400 rounded-lg pb-2 min-w-72 group min-h-[470px]"
+                key={item._id}
               >
-                <div className="w-80 flex justify-center items-center relative overflow-hidden ">
+                <div className="flex justify-center items-center relative overflow-hidden">
                   <img
-                    className="w-80 bg-cover bg-center h-80 bg-no-repeat"
+                    className="w-72 h-80 bg-cover bg-center bg-no-repeat"
                     src={item?.image && item?.image[0]?.url}
-                    alt="image of product"
+                    alt={item.title || "Product Image"}
                     loading="lazy"
                   />
 
                   <FaRegEye
                     onClick={() => navigate(`/product/${item._id}`)}
-                    className="absolute right-4 top-4 text-amber-400 text-2xl"
+                    className="absolute left-4 top-4 text-amber-400 text-2xl cursor-pointer"
+                    aria-label="View Product"
                   />
 
                   <button
                     onClick={() => {
-                      dispatch(cartAction.addToCart(item));
-                      toast.success("Product has been added to the cart!");
+                      if (item.stock > 0) {
+                        dispatch(cartAction.addToCart(item));
+                        toast.success("Product has been added to the cart!");
+                      } else {
+                        toast.error("Out of stock, text me at whatsapp");
+                      }
                     }}
                     className="absolute bottom-[-100%] w-full bg-black text-white p-2 transition-all duration-300 group-hover:bottom-0 flex items-center justify-center gap-2 text-xl"
                   >
                     <BsCartPlus /> <p>Add to Cart</p>
                   </button>
                 </div>
-                <h1>{truncate(item.title, 20)}</h1>
-                <p>Price: {item.price} EGP</p>
+
+                <h1 className="text-2xl">{truncate(item.title, 20)}</h1>
+                <p className={`${item.discount && "line-through"} text-sm`}>
+                  Price:{" "}
+                  <span className="font-bold text-red-500">
+                    {item.price} EGP
+                  </span>
+                </p>
+
                 {item.discount > 0 && (
                   <>
-                    <span>Discount: {item.discount}%</span>
-                    <span>
-                      Price After Discount: {item.priceAfterDiscount} EGP
+                    <span className="text-sm ">
+                      Discount:{" "}
+                      <span className="font-bold text-green-500">
+                        {item.discount}%
+                      </span>
+                    </span>
+                    <span className="text-sm">
+                      Price After Discount:{" "}
+                      <span className="font-bold text-green-500">
+                        {item.priceAfterDiscount} EGP
+                      </span>
                     </span>
                   </>
                 )}
 
-                <span>quantity: {item.stock}</span>
-                <span>Category: ({item?.category})</span>
+                <span className="text-sm">
+                  Quantity: <span className="font-bold">{item.stock}</span>
+                </span>
+                <span className="text-md">
+                  Category: <span className="font-bold">({item.category})</span>
+                </span>
               </div>
             ))}
           </div>

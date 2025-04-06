@@ -3,7 +3,7 @@ import Joi from "joi";
 
 const Product = new Schema(
   {
-    title: { type: String, required: true, trim: true },
+    title: { type: String, required: true, trim: true, unique: true },
     description: { type: String, required: true, trim: true },
     price: { type: Number, required: true },
     image: {
@@ -51,9 +51,7 @@ export const validateCreateProduct = (obj) => {
 export const validateUpdateProduct = (obj) => {
   const schema = Joi.object({
     title: Joi.string().trim().label("Title is required"),
-    description: Joi.string()
-      .trim()
-      .label("Description is required"),
+    description: Joi.string().trim().label("Description is required"),
     price: Joi.number().label("Price is required"),
     stock: Joi.number().label("Stock is required"),
     category: Joi.string().trim().label("Category is required"),

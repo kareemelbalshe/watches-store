@@ -12,6 +12,7 @@ export default function LoginAdmin() {
         setPassword,
         onSubmit,
         ref,
+        errors
       } = useLogin();
     
   return (
@@ -30,6 +31,7 @@ export default function LoginAdmin() {
               icon={<MdOutlineAlternateEmail />}
               required
               border="border-amber-400"
+              error={errors.email}
             />
             <Input
               label="Password"
@@ -40,6 +42,7 @@ export default function LoginAdmin() {
               icon={<RiLockPasswordFill />}
               required
               border="border-amber-400"
+              error={errors.password}
             />
             <Button text="Login" type="submit" />
           </form>

@@ -1,14 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { useViewCart } from "./func/view_cart_logic";
 import Button from "../../../../../components/button/Button";
+import { useTheme } from "../../../../../hooks/ThemeContext";
 
 export default function ViewCart() {
   const { cart, products, renderProduct } = useViewCart();
   const navigate= useNavigate()
 
+  const { isDarkMode } = useTheme();
   return (
     <div className="flex justify-center items-center flex-col gap-5 mb-32">
-      <div className="p-6 rounded-lg shadow-lg w-full max-w-2xl bg-amber-950 mt-10">
+      <div className={`p-6 rounded-lg shadow-lg w-full max-w-2xl 
+        ${isDarkMode ? "bg-amber-950" : "bg-amber-200"}
+        mt-10`}>
         <h2 className="text-2xl font-semibold mb-4">Cart Details</h2>
         <p>
           <strong>Name:</strong> {cart?.firstName} {cart?.lastName}

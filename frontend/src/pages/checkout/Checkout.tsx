@@ -1,91 +1,25 @@
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../lib/redux/store";
 import Input from "../../components/input/Input";
 import Button from "../../components/button/Button";
-import { handleAddToCart } from "../dashboard/cart/redux/cartSlice";
-import { useCallback, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ProductCart } from "../../lib/types/types";
-import { cartAction } from "../../lib/redux/slices/cart-slice";
-import { toast } from "react-toastify";
+import { useCheckout } from "./func/checkout_logic";
 
 export default function Checkout() {
-  const { products } = useSelector((state: RootState) => state.localCart);
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-
-  const totalPrice = useMemo(
-    () =>
-      products.reduce(
-        (acc: number, curr: ProductCart) =>
-          curr.product.priceAfterDiscount
-            ? acc +
-              (curr.product?.priceAfterDiscount || 0) *
-                (curr.quantity?.quantity || 0)
-            : acc + (curr.product?.price || 0) * (curr.quantity?.quantity || 0),
-        0
-      ),
-    [products]
-  );
-
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      if (!products.length) {
-        toast.error("Please add some products to cart");
-        return;
-      }
-
-      const formData = {
-        firstName,
-        lastName,
-        email,
-        phone,
-        address,
-        city,
-        products: products.map((product: ProductCart) => ({
-          product: product.product._id,
-          quantity: product.quantity.quantity,
-        })),
-        totalPrice,
-      };
-
-      await dispatch(handleAddToCart(formData)).unwrap();
-
-      dispatch(cartAction.clear());
-      toast.success("Cart has been added successfully, we will send you");
-
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhone("");
-      setAddress("");
-      setCity("");
-
-      setTimeout(() => {
-        navigate("/");
-      }, 5000);
-    },
-    [
-      dispatch,
-      navigate,
-      products,
-      firstName,
-      lastName,
-      email,
-      phone,
-      address,
-      city,
-      totalPrice,
-    ]
-  );
+  const {
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    email,
+    setEmail,
+    phone,
+    setPhone,
+    address,
+    setAddress,
+    city,
+    setCity,
+    errors,
+    handleSubmit,
+    navigate,
+  } = useCheckout();
 
   return (
     <div className="flex items-start justify-between p-10">
@@ -101,6 +35,7 @@ export default function Checkout() {
             border="border-amber-400"
             value={firstName}
             setValue={setFirstName}
+            error={errors.firstName}
           />
           <Input
             label="Last Name"
@@ -109,6 +44,7 @@ export default function Checkout() {
             border="border-amber-400"
             value={lastName}
             setValue={setLastName}
+            error={errors.lastName}
           />
         </div>
         <Input
@@ -119,6 +55,7 @@ export default function Checkout() {
           border="border-amber-400"
           value={email}
           setValue={setEmail}
+          error={errors.email}
         />
         <Input
           label="Phone"
@@ -127,6 +64,7 @@ export default function Checkout() {
           border="border-amber-400"
           value={phone}
           setValue={setPhone}
+          error={errors.phone}
         />
         <Input
           label="Address"
@@ -135,6 +73,7 @@ export default function Checkout() {
           border="border-amber-400"
           value={address}
           setValue={setAddress}
+          error={errors.address}
         />
         <Input
           label="City"
@@ -143,6 +82,7 @@ export default function Checkout() {
           border="border-amber-400"
           value={city}
           setValue={setCity}
+          error={errors.city}
         />
         <Button text="Checkout" type="submit" width="w-[300px]" />
       </form>

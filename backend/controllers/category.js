@@ -15,6 +15,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
 export const getAllCategories = asyncHandler(async (req, res) => {
   try {
     const categories = await Category.find();
@@ -33,6 +34,7 @@ export const getCategoryById = asyncHandler(async (req, res) => {
   }
 });
 
+
 export const createCategory = asyncHandler(async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No image provided" });
@@ -41,6 +43,13 @@ export const createCategory = asyncHandler(async (req, res) => {
   const { error } = validateCreateCategory(req.body);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
+  }
+
+  const existingCategory = await Category.findOne({
+    title: req.body.title.trim(),
+  });
+  if (existingCategory) {
+    return res.status(400).json({ message: "Category already exists" });
   }
 
   const imagePath = path.join(__dirname, `../images/${req.file.filename}`);
@@ -53,7 +62,7 @@ export const createCategory = asyncHandler(async (req, res) => {
     }
 
     const category = await Category.create({
-      title: req.body.title,
+      title: req.body.title.trim(),
       image: { url: result.secure_url, publicId: result.public_id },
     });
 
@@ -66,6 +75,7 @@ export const createCategory = asyncHandler(async (req, res) => {
     }
   }
 });
+
 
 export const updateCategory = asyncHandler(async (req, res) => {
   try {
@@ -83,6 +93,7 @@ export const updateCategory = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Failed to update category" });
   }
 });
+
 
 export const updateCategoryImage = asyncHandler(async (req, res) => {
   try {
@@ -118,6 +129,7 @@ export const updateCategoryImage = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Failed to update category image" });
   }
 });
+
 
 export const deleteCategory = asyncHandler(async (req, res) => {
   try {

@@ -11,7 +11,7 @@ const CategorySection = memo(function CategorySection({
 }) {
   return (
     <div className="w-full flex flex-row flex-wrap my-10 items-center justify-between">
-      <div className="">ad</div>
+      <div className="h-screen">ad</div>
       <motion.div
         className="mx-auto flex flex-row flex-wrap justify-center gap-6 w-1/2 p-2"
         initial={{ opacity: 0, y: 20 }}
@@ -44,7 +44,7 @@ const CategorySection = memo(function CategorySection({
           </Link>
         ))}
       </motion.div>
-      <div className="">ad</div>
+      <div className="h-screen">ad</div>
     </div>
   );
 });

@@ -37,6 +37,7 @@ export const getAllCarts = asyncHandler(async (req, res) => {
   }
 });
 
+
 export const getCartById = asyncHandler(async (req, res) => {
   try {
     const cart = await Cart.findById(req.params.cartId).populate("products.product");
@@ -45,6 +46,7 @@ export const getCartById = asyncHandler(async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
 
 export const createCart = asyncHandler(async (req, res) => {
   try {
@@ -80,6 +82,7 @@ export const deleteCart = asyncHandler(async (req, res) => {
   }
 });
 
+
 export const recordSale = async (products) => {
   try {
     const bulkOperations = products.map((item) => ({
@@ -99,6 +102,7 @@ export const recordSale = async (products) => {
     console.error("Error recording sales:", error);
   }
 };
+
 
 export const updateSalesLast24h = async () => {
   try {
@@ -126,6 +130,7 @@ export const updateSalesLast24h = async () => {
     console.error("Error updating salesLast24h:", error);
   }
 };
+
 
 cron.schedule("0 * * * *", () => {
   console.log("Updating sales last 24 hours...");

@@ -1,26 +1,35 @@
-import { Schema, model } from 'mongoose';
-import Joi from 'joi';
+import { Schema, model } from "mongoose";
+import Joi from "joi";
 
-const Category = new Schema({
+const Category = new Schema(
+  {
     title: {
-        type: String,
-        required: true,
-        trim: true
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
     },
     image: {
-        type: Object,
-        default: {
-            url: "",
-            publicId: null,
-        }
+      type: Object,
+      default: {
+        url: "",
+        publicId: null,
+      },
     },
-}, { timestamps: true })
+  },
+  { timestamps: true }
+);
 
-export const validateCreateCategory = function (obj) {
-    const schema = Joi.object({
-        title: Joi.string().trim().required().label("Title is required")
-    })
-    return schema.validate(obj)
-}
+export const validateCreateCategory = (obj) => {
+  const schema = Joi.object({
+    title: Joi.string().trim().min(3).max(30).required().messages({
+      "string.empty": "Title is required",
+      "string.min": "Title must be at least 3 characters",
+      "string.max": "Title must be at most 30 characters",
+    }),
+  });
 
-export default model('Category', Category)
+  return schema.validate(obj, { abortEarly: false });
+};
+
+export default model("Category", Category);

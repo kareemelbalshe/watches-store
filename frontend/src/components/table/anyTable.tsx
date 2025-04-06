@@ -40,7 +40,7 @@ export default function AnyTable({
 
   const renderActions = useMemo(() => {
     return (row: any) => (
-      <td className="p-2 w-[400px] flex items-center gap-2 justify-around">
+      <td className="p-2 w-[250px] flex items-center gap-2 justify-around">
         {view && (
           <Button
             className="btn-sm px-2 py-2"

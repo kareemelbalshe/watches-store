@@ -6,6 +6,8 @@ export default function ProductDetails() {
     product,
     hoveredIndex,
     position,
+    image,
+    setImage,
     handleMouseMove,
     handleMouseLeave,
     dispatch,
@@ -18,29 +20,40 @@ export default function ProductDetails() {
         {product?.title}
       </h1>
 
-      <div className="flex flex-wrap justify-center gap-4">
-        {product?.image?.length ? (
-          product.image.map((img, index) => (
-            <div
-              key={index}
-              className="w-80 h-80 overflow-hidden rounded-lg border bg-no-repeat border-amber-400 shadow-md relative"
-              onMouseMove={(e) => handleMouseMove(e, index)}
-              onMouseLeave={handleMouseLeave}
-              style={{
-                backgroundImage: `url(${img.url})`,
-                backgroundSize: hoveredIndex === index ? "200%" : "100%",
-                backgroundPosition:
-                  hoveredIndex === index
-                    ? `${position.x}% ${position.y}%`
-                    : "center",
-                transition: "background-size 0.3s ease",
-              }}
-            />
-          ))
-        ) : (
-          <p className="text-center">No images available</p>
-        )}
-      </div>
+      {product?.image ? (
+        <div className="flex flex-wrap items-center justify-center gap-20">
+          <div className="flex flex-wrap flex-col gap-5 h-[500px] ">
+            {product.image.map((img, index) => (
+              <div
+                key={index}
+                onClick={() => setImage(img.url)}
+                className="w-32 h-32 overflow-hidden rounded-lg border bg-no-repeat border-amber-400 shadow-md relative cursor-pointer"
+              >
+                <img
+                  src={img.url}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+          <div
+            className="w-[500px] h-[500px] overflow-hidden rounded-lg border bg-no-repeat border-amber-400 shadow-md relative"
+            onMouseMove={(e) => handleMouseMove(e)}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              backgroundImage: `url(${image})`,
+              backgroundSize: hoveredIndex ? "250%" : "100%",
+              backgroundPosition: hoveredIndex
+                ? `${position.x}% ${position.y}%`
+                : "center",
+              transition: "background-size 0.3s ease",
+            }}
+          />
+        </div>
+      ) : (
+        <p className="text-center">No images available</p>
+      )}
 
       <p className="text-center text-lg">{product?.description}</p>
 
@@ -68,8 +81,12 @@ export default function ProductDetails() {
         </p>
         <p
           onClick={() => {
-            dispatch(cartAction.addToCart(product));
-            toast.success("Product has been added to the cart!");
+            if (product.stock > 0) {
+              dispatch(cartAction.addToCart(product));
+              toast.success("Product has been added to the cart!");
+            } else {
+              toast.error("Out of stock, text me at whatsapp");
+            }
           }}
           className="bg-black text-white font-semibold rounded-lg p-2 shadow-md cursor-pointer"
         >
