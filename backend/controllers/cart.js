@@ -125,7 +125,6 @@ export const updateSalesLast24h = async () => {
     });
 
     await Product.bulkWrite(bulkOperations);
-    console.log("SalesLast24h updated successfully.");
   } catch (error) {
     console.error("Error updating salesLast24h:", error);
   }
@@ -133,6 +132,5 @@ export const updateSalesLast24h = async () => {
 
 
 cron.schedule("0 * * * *", () => {
-  console.log("Updating sales last 24 hours...");
   updateSalesLast24h();
 });
