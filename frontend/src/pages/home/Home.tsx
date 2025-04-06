@@ -38,27 +38,26 @@ export default function Home() {
         <CategorySection categories={categories} isDarkMode={isDarkMode} />
       </div>
 
-      <h1 className="text-4xl mt-6">
-        Less quantity
-      </h1>
+      <h1 className="text-4xl mt-6">Less quantity</h1>
       <Underline />
 
       <ProductSlider arr={productsLess.products} />
-      <h1 className="text-4xl mt-6">
-        Most sales
-      </h1>
+      <h1 className="text-4xl mt-6">Most sales</h1>
       <Underline />
       {productsSales.products?.length > 0 ? (
         <ProductSlider arr={productsSales.products} />
       ) : (
         <h1>No sales yet</h1>
       )}
-      <h1 className="text-4xl mt-6 mx-auto hidden md:block" id="reviews">
-        Reviews
-      </h1>
-      <Underline />
-      <RollingGallery autoplay={true} pauseOnHover={true} images={images} />
-
+      {images.length > 0 && (
+        <>
+          <h1 className="text-4xl mt-6 mx-auto hidden md:block" id="reviews">
+            Reviews
+          </h1>
+          <Underline />
+          <RollingGallery autoplay={true} pauseOnHover={true} images={images} />
+        </>
+      )}
       <Link
         className="fixed bottom-12 right-4 bg-green-500 rounded-full z-10"
         to="https://api.whatsapp.com/send/?phone=%2B201060856694&text&type=phone_number&app_absent=0"

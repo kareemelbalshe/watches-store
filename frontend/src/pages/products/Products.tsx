@@ -16,8 +16,8 @@ export default function Products() {
     <div className="w-full flex items-center flex-col pb-2 md:pb-24 mb-20 md:mb-0">
       <h1 className="text-4xl mt-6" id="reviews">
         {productsTable.products?.length === 0
-          ? "No Products to this category"
-          : `All Products ${category ? `to (${category})` : ""}`}
+          ? "No Products"
+          : category? `All Products ${category ? `to (${category})` : "No products to this category"}` : ""}
       </h1>
       <Underline />
       {productsTable.products?.length > 0 && (
@@ -30,7 +30,7 @@ export default function Products() {
               >
                 <div className="flex justify-center items-center relative overflow-hidden">
                   <img
-                    className="w-72 h-80 bg-cover bg-center bg-no-repeat"
+                    className="w-72 h-80 bg-center bg-no-repeat object-cover"
                     src={item?.image && item?.image[0]?.url}
                     alt={item.title || "Product Image"}
                     loading="lazy"
