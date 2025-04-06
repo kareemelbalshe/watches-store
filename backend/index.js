@@ -29,7 +29,7 @@ app.use(rateLimiting({
     max: 200
 }))
 
-app.use(cors());
+app.use(cors({origin: "*", credentials: true}))
 
 app.use("/auth", authRoute);
 app.use("/categories", categoryRoute);
