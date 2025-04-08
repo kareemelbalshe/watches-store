@@ -31,10 +31,20 @@ app.use(
   })
 );
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://watches-store-rho.vercel.app",
+];
 app.use(
   cors({
-    origin: "https://watches-store-rho.vercel.app", // ضع رابط الـ frontend هنا
-    credentials: true, // السماح بإرسال الكوكيز والتوكن
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
