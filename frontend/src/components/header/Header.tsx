@@ -59,8 +59,8 @@ export default function Header() {
           </li>
         </ul>
 
-        <div className="text-3xl md:text-4xl font-bold text-amber-400 cursor-pointer flex items-center gap-3 z-20">
-        <span
+        <div className="text-3xl md:text-4xl font-bold text-amber-400 flex items-center gap-3 z-20">
+          <span
             className={`text-sm select-none cursor-default ${
               isDarkMode ? "text-black" : "text-white"
             }`}
@@ -109,7 +109,9 @@ export default function Header() {
             </Link>
           )}
 
-          {isAuthenticated && <CgLogOut onClick={logoutHandler} />}
+          {isAuthenticated && (
+            <CgLogOut className="cursor-pointer" onClick={logoutHandler} />
+          )}
 
           <button
             className="md:hidden text-3xl focus:outline-none"
