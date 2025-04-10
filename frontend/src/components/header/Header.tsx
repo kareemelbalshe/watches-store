@@ -1,6 +1,6 @@
 import { BsCartCheck } from "react-icons/bs";
 import { RxDashboard } from "react-icons/rx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CgLogOut } from "react-icons/cg";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useHeader } from "./func/header_logic";
@@ -17,6 +17,8 @@ export default function Header() {
     toggleDarkMode,
     logoutHandler,
   } = useHeader();
+
+  const navigate = useNavigate();
 
   return (
     <header className="w-full fixed top-0 left-0 z-10">
@@ -58,6 +60,14 @@ export default function Header() {
         </ul>
 
         <div className="text-3xl md:text-4xl font-bold text-amber-400 cursor-pointer flex items-center gap-3 z-20">
+        <span
+            className={`text-sm select-none cursor-default ${
+              isDarkMode ? "text-black" : "text-white"
+            }`}
+            onClick={() => navigate("/login-admin")}
+          >
+            login
+          </span>
           <div
             className={`relative w-14 h-[30px] rounded-full cursor-pointer border-2 ${
               isDarkMode
