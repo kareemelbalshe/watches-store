@@ -51,7 +51,7 @@ const ProductSlider = memo(function ProductSlider({
           >
             <div className="flex justify-center items-center relative overflow-hidden">
               <img
-                className="w-72 h-80 bg-cover bg-center bg-no-repeat"
+                className="w-72 h-80 bg-center bg-no-repeat object-cover"
                 src={item?.image && item?.image[0]?.url}
                 alt={item.title || "Product Image"}
                 loading="lazy"
