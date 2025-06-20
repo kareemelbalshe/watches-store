@@ -34,7 +34,7 @@ const ProductSlider = memo(function ProductSlider({
     <div className="relative my-10 w-full px-4 md:px-16">
       <button
         onClick={() => scrollSlider("left")}
-        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg z-10 hidden md:flex"
+        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg z-1 hidden md:flex"
         aria-label="Scroll Left"
       >
         <FaChevronLeft size={20} />
@@ -113,7 +113,7 @@ const ProductSlider = memo(function ProductSlider({
 
       <button
         onClick={() => scrollSlider("right")}
-        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg z-10 hidden md:flex"
+        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black text-white p-2 rounded-full shadow-lg z-1 hidden md:flex"
         aria-label="Scroll Right"
       >
         <FaChevronRight size={20} />
